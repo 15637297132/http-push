@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.p7.framework.http.push.mapper.PushRecordMapper">
+    <resultMap id="BaseResultMap" type="com.p7.framework.http.push.model.PushModel">
+        <id column="msg_id" property="msgId" jdbcType="VARCHAR" />
+        <id column="data_time" property="dataTime" jdbcType="TIMESTAMP"/>
+        <result column="app_id" property="appId" jdbcType="INTEGER"/>
+        <result column="last_push_time" property="lastPushTime" jdbcType="TIMESTAMP"/>
+        <result column="push_times" property="pushTimes" jdbcType="INTEGER"/>
+        <result column="least_retry_times" property="leastRetryTimes" jdbcType="INTEGER"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="push_data" property="pushData" jdbcType="VARCHAR"/>
+        <result column="push_state" property="pushState" jdbcType="INTEGER"/>
+        <result column="queue_index" property="queueIndex" jdbcType="INTEGER"/>
+        <result column="push_type" property="pushType" jdbcType="INTEGER"/>
+        <result column="push_service_id" property="pushServiceId" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+		msg_id,app_id,last_push_time,push_times,least_retry_times,url,push_data,push_state,queue_index,push_type
+		,push_service_id,create_time,data_time
+	</sql>
+
+    <insert id="savePushRecord" parameterType="com.p7.framework.http.push.model.PushModel">
+        INSERT INTO tb_push_record (msg_id,app_id,last_push_time,push_times,least_retry_times,url,push_data,push_state,queue_index,push_type,push_service_id,create_time,data_time)
+        VALUES (#{msgId},#{appId},#{lastPushTime},#{pushTimes},#{leastRetryTimes},#{url},#{pushData},#{pushState},#{queueIndex},#{pushType},#{pushServiceId},#{createTime},#{dataTime})
+    </insert>
+
+    <update id="updatePushStatus" parameterType="com.p7.framework.http.push.model.PushModel">
+        update tb_push_record
+        <set>
+            <if test="queueIndex != null">
+                queue_index=#{queueIndex},
+            </if>
+            <if test="lastPushTime != null">
+                last_push_time=#{lastPushTime},
+            </if>
+            <if test="pushTimes != null">
+                push_times=#{pushTimes},
+            </if>
+            <if test="url != null">
+                url=#{url},
+            </if>
+            <if test="pushState != null">
+                push_state=#{pushState},
+            </if>
+            <if test="pushType != null">
+                push_type=#{pushType},
+            </if>
+        </set>
+        where msg_id = #{msgId}
+    </update>
+
+    <update id="updatePushStatusBatch">
+        INSERT INTO tb_push_record (msg_id,app_id,last_push_time,push_times,least_retry_times,url,push_data,push_state,queue_index,push_type,push_service_id,create_time,data_time)
+        VALUES
+        <foreach collection="pushModelList" item="item" index="index" separator=",">
+            (#{item.msgId},#{item.appId},#{param.lastPushTime},1,#{item.leastRetryTimes},#{item.url},#{item.pushData},#{param.pushState},#{item.queueIndex},#{item.pushType},#{item.pushServiceId},#{item.createTime},#{item.dataTime})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        last_push_time=#{param.lastPushTime},push_times=push_times + 1,push_state=#{param.pushState}
+    </update>
+
+    <select id="getWaitTaskBatch"
+            resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from tb_push_record
+        where push_state > 0
+        <if test="pushModel.pushServiceId != null">
+            and push_service_id = #{pushModel.pushServiceId}
+        </if>
+        <if test="pushModel.pushTimes != null">
+            and push_times &lt; #{pushModel.pushTimes}
+        </if>
+        <if test="pushModel.appId != null">
+            and app_id = #{pushModel.appId}
+        </if>
+        <if test="pushModel.pushType != null">
+            and push_type = #{pushModel.pushType}
+        </if>
+        <if test="keys != null and keys.size > 0">
+            and msg_id not in
+            <foreach collection="keys" item="key" open="(" close=")" separator="," >
+                #{key}
+            </foreach>
+        </if>
+        limit #{num}
+    </select>
+
+    <insert id="savePushRecordNoConfig" parameterType="com.p7.framework.http.push.model.PushModel">
+        INSERT INTO tb_push_record_no_config (msg_id,app_id,last_push_time,push_times,least_retry_times,url,push_data,push_state,queue_index,push_type,push_service_id,create_time,data_time)
+        VALUES (#{msgId},#{appId},#{lastPushTime},#{pushTimes},#{leastRetryTimes},#{url},#{pushData},#{pushState},#{queueIndex},#{pushType},#{pushServiceId},#{createTime},#{dataTime})
+    </insert>
+
+    <delete id="batchDelSuccess">
+        delete from tb_push_record where
+        <foreach collection="keys" item="key" separator=" or " >
+            msg_id = #{key}
+        </foreach>
+    </delete>
+
+</mapper>

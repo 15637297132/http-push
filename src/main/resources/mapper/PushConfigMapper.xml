@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.p7.framework.http.push.mapper.PushConfigMapper">
+    <resultMap id="BaseResultMap" type="com.p7.framework.http.push.model.PushConfig">
+        <id column="push_config_id" property="pushConfigId" jdbcType="INTEGER"/>
+        <result column="app_id" property="appId" jdbcType="INTEGER"/>
+        <result column="next_task_interval" property="nextTaskInterval" jdbcType="INTEGER"/>
+        <result column="least_retry_times" property="leastRetryTimes" jdbcType="INTEGER"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="capacity" property="capacity" jdbcType="INTEGER"/>
+        <result column="push_type" property="pushType" jdbcType="INTEGER"/>
+        <result column="first_delayed_ms" property="firstDelayedMs" jdbcType="INTEGER"/>
+        <result column="delayed_cycle_ms" property="delayedCycleMs" jdbcType="INTEGER"/>
+        <result column="enabled" property="enabled" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+		push_config_id,app_id,next_task_interval,least_retry_times,url,capacity,push_type,first_delayed_ms,delayed_cycle_ms,enabled
+	</sql>
+
+
+    <select id="getList"
+            resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> FROM tb_push_config
+    </select>
+
+    <select id="get"
+            resultMap="BaseResultMap" parameterType="com.p7.framework.http.push.model.PushConfig">
+        select <include refid="Base_Column_List"/> FROM tb_push_config where app_id = #{appId} and push_type = #{pushType} and enabled = 0
+    </select>
+
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"
+>
+
+    <bean id="initDelayQueueListener" class="com.p7.framework.http.push.manage.InitDelayQueueListener"></bean>
+
+    <!-- 扫描数据库的线程工厂 -->
+    <bean id="scanDatabaseThreadFactory" class="com.p7.framework.http.push.manage.ScanDatabaseFactory">
+        <property name="threadNamePrefix" value="scan-database-"/>
+    </bean>
+    <!-- 定时扫描数据库线程池 -->
+    <bean id="scheduledThreadPoolExecutor" class="java.util.concurrent.ScheduledThreadPoolExecutor">
+        <constructor-arg value="4"/>
+        <constructor-arg ref="scanDatabaseThreadFactory"/>
+    </bean>
+
+    <!-- 扫描数据库管理期期 -->
+    <bean id="scanDatabaseManager" class="com.p7.framework.http.push.manage.ScanDatabaseManager">
+        <property name="scheduledThreadPoolExecutor" ref="scheduledThreadPoolExecutor"/>
+    </bean>
+
+    <!-- 配置线程池 -->
+    <bean id="batchPushThreadPool" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor"
+          destroy-method="destroy">
+        <!-- 线程池维护线程的最少数量 -->
+        <property name="corePoolSize" value="8"/>
+        <!-- 线程池维护线程所允许的空闲时间 -->
+        <property name="keepAliveSeconds" value="60"/>
+        <!-- 线程池维护线程的最大数量 -->
+        <property name="maxPoolSize" value="10"/>
+        <!-- 线程池所使用的缓冲队列 -->
+        <property name="queueCapacity" value="5000"/>
+        <property name="threadNamePrefix" value="batch-push-"/>
+        <property name="waitForTasksToCompleteOnShutdown" value="true"/>
+    </bean>
+
+    <bean id="singlePushThreadPool" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor"
+          destroy-method="destroy">
+        <!-- 线程池维护线程的最少数量 -->
+        <property name="corePoolSize" value="4"/>
+        <!-- 线程池维护线程所允许的空闲时间 -->
+        <property name="keepAliveSeconds" value="60"/>
+        <!-- 线程池维护线程的最大数量 -->
+        <property name="maxPoolSize" value="4"/>
+        <!-- 线程池所使用的缓冲队列 -->
+        <property name="queueCapacity" value="20000"/>
+        <property name="threadNamePrefix" value="single-push-"/>
+        <property name="waitForTasksToCompleteOnShutdown" value="true"/>
+    </bean>
+
+    <!-- 配置通知参数, 时间单位分-->
+    <bean id="singlePushRetryConfig" class="com.p7.framework.http.push.config.SinglePushRetryConfig">
+        <property name="pushParams">
+            <map>
+                <entry key="1" value="0"/>
+                <entry key="2" value="3000"/>
+                <entry key="3" value="6000"/>
+                <entry key="4" value="9000"/>
+                <entry key="5" value="12000"/>
+            </map>
+        </property>
+    </bean>
+
+</beans>
