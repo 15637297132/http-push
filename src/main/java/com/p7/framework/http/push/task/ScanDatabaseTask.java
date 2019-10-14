@@ -1,5 +1,6 @@
 package com.p7.framework.http.push.task;
 
+import com.p7.framework.http.push.SystemStartedEvent;
 import com.p7.framework.http.push.manage.ScanDatabaseManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,9 @@ public class ScanDatabaseTask implements Runnable {
                     logger.info("scan database task reset , appId is {} , pushType is {}", batchPushTask.getAppId(), batchPushTask.getPushType());
                 }
             }
-            batchPushTask.triggerScan();
+            if (SystemStartedEvent.system) {
+                batchPushTask.triggerScan();
+            }
         } catch (Exception e) {
             logger.error("appId is {} , pushType is {} , catch exception {}", batchPushTask.getAppId(), batchPushTask.getPushType(), e.getMessage());
         }
