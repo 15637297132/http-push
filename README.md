@@ -5,7 +5,7 @@
 批量推送：相同AppId和PushType的数据公用一个延时任务，提供满足条数推送和失败重试，详见下表。
 其中enabled、capacity、next_task_interval、url可动态配置，在下一次定时扫描数据库配置后，第一次有推送任务时生效
 
-Db配置：52库-db_sleep_push
+Db配置：db_sleep_push
 表 tb_push_config
 字段名称				字段含义
 push_config_id	
