@@ -51,6 +51,7 @@ public class BatchPushManager implements InitializingBean {
                 }
             }
         }
+        LOGGER.info("init batchPushTask");
     }
 
     public BatchPushTask initBatchPushTask(PushConfig pushConfig) {

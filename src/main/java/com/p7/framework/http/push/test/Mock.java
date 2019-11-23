@@ -1,7 +1,6 @@
-package com.p7.framework.http.push;
+package com.p7.framework.http.push.test;
 
 import com.p7.framework.http.push.service.HttpPushService;
-import com.p7.framework.http.push.test.ConcurrentBatchTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -12,8 +11,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  *
  * @author Yangzhen
  **/
-public class App {
-    private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
+public class Mock {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Mock.class);
 
     private static ClassPathXmlApplicationContext context;
 
@@ -30,10 +29,10 @@ public class App {
             LOGGER.error("== application start error:", e);
             return;
         }
-        synchronized (App.class) {
+        synchronized (Mock.class) {
             while (true) {
                 try {
-                    App.class.wait();
+                    Mock.class.wait();
                 } catch (InterruptedException e) {
                     LOGGER.error("== synchronized error:", e);
                 }

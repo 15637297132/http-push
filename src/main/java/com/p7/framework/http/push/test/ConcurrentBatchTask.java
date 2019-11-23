@@ -19,13 +19,13 @@ public class ConcurrentBatchTask extends AbstractConcurrentControl {
 
     static {
         appId.add(12301);
-        appId.add(12302);
-        appId.add(12303);
+//        appId.add(12302);
+//        appId.add(12303);
 //        appId.add(12304);
         pushTypes.put(12301, 0);
-        pushTypes.put(12301, 1);
-        pushTypes.put(12302, 0);
-        pushTypes.put(12303, 0);
+//        pushTypes.put(12301, 1);
+//        pushTypes.put(12302, 0);
+//        pushTypes.put(12303, 0);
 //        pushTypes.put(12304, 0);
     }
 
