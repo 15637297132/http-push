@@ -7,7 +7,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
 /**
- * 测试时，注释掉spring-push.xml中的<bean id="initDelayQueueListener" class="com.clife.sleep.commons.push.business.manage.InitDelayQueueListener"/>
+ * 测试时，注释掉spring-push.xml中的<bean id="initDelayQueueListener" class="com.p7.framework.http.push.manage.InitDelayQueueListener"/>
  *
  * @author Yangzhen
  **/
