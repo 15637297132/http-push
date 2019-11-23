@@ -23,8 +23,8 @@ enabled					0：启用，1：禁用
 推送成功或失败的消息可以在tb_push_record表中查看，未配置tb_push_config的推送数据存储在tb_push_record_no_config中。详见表结构。
 
 高频率案例 
-INSERT INTO `db_sleep_push`.`tb_push_config`(`push_config_id`, `app_id`, `next_task_interval`, `least_retry_times`, `url`, `capacity`, `push_type`, `first_delayed_ms`, `delayed_cycle_ms`, `enabled`) VALUES (1, 1, 60000, 3, 'xxx', 100, 0, 10000, 20000, 0);  
-低频率案例 INSERT INTO `db_sleep_push`.`tb_push_config`(`push_config_id`, `app_id`, `next_task_interval`, `least_retry_times`, `url`, `capacity`, `push_type`, `first_delayed_ms`, `delayed_cycle_ms`, `enabled`) VALUES (2, 2, 60000, 3, 'xxx', 10, 1, 10000, 45000, 0);
+INSERT INTO `db_http_push`.`tb_push_config`(`push_config_id`, `app_id`, `next_task_interval`, `least_retry_times`, `url`, `capacity`, `push_type`, `first_delayed_ms`, `delayed_cycle_ms`, `enabled`) VALUES (1, 1, 60000, 3, 'xxx', 100, 0, 10000, 20000, 0);  
+低频率案例 INSERT INTO `db_http_push`.`tb_push_config`(`push_config_id`, `app_id`, `next_task_interval`, `least_retry_times`, `url`, `capacity`, `push_type`, `first_delayed_ms`, `delayed_cycle_ms`, `enabled`) VALUES (2, 2, 60000, 3, 'xxx', 10, 1, 10000, 45000, 0);
 
 注意：
 1.其中缓存tb_push_config使用的是ConcurrentHashMap，你可以换成guava，让缓存拥有失效时间
