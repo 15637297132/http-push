@@ -38,10 +38,6 @@ public class SystemStartedEvent implements ApplicationListener<ContextStartedEve
     public static void main(String[] args) {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[]{"classpath:/spring-application.xml"});
         context.start();
-
-//        BatchPushManager bean = context.getBean(BatchPushManager.class);
-//        System.out.println(bean);
-
         synchronized (SystemStartedEvent.class) {
             while (true) {
                 try {
